@@ -1,0 +1,123 @@
+<title>
+</title>
+<head>
+
+    <script>
+        //every second check the vertical screen size
+        var intervalID = window.setInterval(checkSize, 1000);
+        
+        function checkSize() {
+          var hwin = window.outerWidth;
+          var vwin = window.outerHeight;
+          var hrez = document.getElementById("hrez").value;
+          var vrez = document.getElementById("vrez").value;
+          var diag = document.getElementById("diag").value;
+          var aspect = hrez/vrez;
+          var chartdist_mm = 4000;
+          var inches2mm = 25.4;
+          var view_dist = 24*inches2mm;
+          var chart_hieght_mm = 650;
+          var vmonitor_mm = Math.sin(Math.atan2(vrez,hrez))*diag*inches2mm;
+          var half_monitor_vangle = Math.atan(0.5*vmonitor_mm/view_dist);
+          var half_chart_vangle = Math.atan(0.5*chart_hieght_mm/chartdist_mm);
+          var chart_vrez = Math.round(vwin*half_chart_vangle/half_monitor_vangle);
+          var maxsize = 0.7*vwin;
+          if (chart_vrez > maxsize) {
+            chart_vrez = maxsize;
+            document.getElementById("msg").innerHTML = "Maximum size is being limited.  Adjust screen parameters";
+          } else {
+            document.getElementById("msg").innerHTML = "";
+          }
+          var chart_render_mm = vmonitor_mm*chart_vrez/vwin;
+          var monitor_pdd = (vrez/(2*half_monitor_vangle*(180/Math.PI))).toFixed(1);
+          var instruction_msg = "View fullscreen at 24 inch (61cm) distance to approximate 9.3deg vertical (" + Math.round(chart_render_mm) +"mm@" + monitor_pdd +"ppd)";
+          document.getElementById("instruction").innerHTML = instruction_msg;
+
+          var txt = vwin + " " + vrez + " " + aspect + " " + vmonitor_mm + " " + chart_vrez;
+          document.getElementById("eyechart").style.height = chart_vrez;
+        }
+        
+        var elem = document.documentElement;
+        var isFullscreen = false;
+        
+        function toggleFullscreen() {
+            if(isFullscreen)
+                closeFullscreen();
+            else
+                openFullscreen();
+        }
+        function openFullscreen() {
+          if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+          } else if (elem.webkitRequestFullscreen) { /* Safari */
+            elem.webkitRequestFullscreen();
+          } else if (elem.msRequestFullscreen) { /* IE11 */
+            elem.msRequestFullscreen();
+          }
+          isFullscreen = true;
+        }
+        function closeFullscreen() {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+          } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
+          }
+          isFullscreen = false;
+        }
+    </script>
+
+    <style>
+        body { 
+            background-color: #888; 
+            font-family: sans-serif;
+        }
+        .container {
+            height: 100%;
+            width: 100%;
+            position: relative;
+            margin: 0;
+            padding: 0;
+            }
+        .vertical-center {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            align-content: center;
+            -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+            }
+        .eyechart { 
+            max-height: 100%; 
+            max-width: 100%;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+ 
+        <center>
+            Readability Test 2022.08.29<br>
+            <table>
+                    <td>Screen Horizontal Resolution (pixels):</td>
+                    <td><input type="text" id="hrez"  value="1920" size="5"></td>
+                    <td>Screen Vertical Resolution (pixels):</td>
+                    <td><input type="text" id="vrez" value="1080"size="5"></td>
+                    <td>Screen Diagonal Size (inches):</td>
+                    <td><input type="text" id="diag" value="16"size="4"></td>
+            </table>
+
+            </center>
+            <div class="vertical-center">
+                <center>
+                    <img class="eyechart" id="eyechart" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/ETDRS_Chart_R.svg/1920px-ETDRS_Chart_R.svg.png">
+                    <br><br><div id="instruction"></div>
+                    <br><div id="msg" style="color:red"></div><br>
+                    <button onclick="toggleFullscreen();">Toggle Fullscreen</button>
+
+                </center>
+            </div>
+      </div>
+</body>

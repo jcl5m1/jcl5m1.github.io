@@ -1,0 +1,383 @@
+<title>
+</title>
+<head>
+
+    <script>
+        //every second check the vertical screen size
+        var intervalID = window.setInterval(stopwatch, 10);
+
+        var start_time = 0;
+        var stop_time = 0;
+        var touch_count = 0;
+        var targets = null;
+        var touch_limit = 20;
+        var selectedTarget = -1;
+
+        function onLoad() {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            var m = urlParams.get('mode');
+            if(m != null)
+                document.getElementById("mode").value = m;
+            createTouchContent(document.getElementById("mode").value);
+        }
+
+        function setMode(mode) {
+            var url = window.location.href;
+            if(url.indexOf('?') == -1)
+                url += "?mode="+mode;
+            else
+                url = url.substring(0, url.indexOf('?') + 1)+"mode="+mode;
+            window.location.href = url;
+        }
+
+        function createTouchContent(mode) {
+            
+            console.log(mode);            
+
+            if(mode == 'eight') {
+                document.getElementById('touchtest').innerHTML = `
+                    <table class="touch-content">
+                    <tr>
+                        <td>
+                            <center>
+                                <div class="target" id="target0" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                                <div class="target" id="target1" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                                <div class="target" id="target2" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <center>
+                                <div class="target" id="target3" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                            <img class="tag" id="tag" src="https://docs.opencv.org/4.x/marker23.png">
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                                <div class="target" id="target4" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <center>
+                                <div class="target" id="target5" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                                <div class="target" id="target6" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                        <td>                       
+                            <center>
+                                <div class="target" id="target7" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                    </tr>
+                </table>
+                `;
+
+                targets = 
+                [
+                    document.getElementById("target0"),
+                    document.getElementById("target1"),
+                    document.getElementById("target2"),
+                    document.getElementById("target3"),
+                    document.getElementById("target4"),
+                    document.getElementById("target5"),
+                    document.getElementById("target6"),
+                    document.getElementById("target7")
+                ];
+
+            }
+            if(mode == 'sixteen') {   
+                document.getElementById('touchtest').innerHTML = `
+                    <table class="touch-content">
+                    <tr height="25%">
+                        <td>
+                            <center>
+                                <div class="target" id="target0" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                                <div class="target" id="target1" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                                <div class="target" id="target2" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                                <div class="target" id="target3" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <center>
+                                <div class="target" id="target4" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                                <div class="target" id="target5" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                                <div class="target" id="target6" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                                <div class="target" id="target7" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <center>
+                                <div class="target" id="target8" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                                <div class="target" id="target9" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                                <div class="target" id="target10" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                                <div class="target" id="target11" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <center>
+                                <div class="target" id="target12" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                                <div class="target" id="target13" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                                <div class="target" id="target14" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                                <div class="target" id="target15" onclick="targetTouched(this);"></div>
+                            </center>
+                        </td>
+                    </tr>
+                </table>
+                `;
+
+                targets = 
+                [
+                    document.getElementById("target0"),
+                    document.getElementById("target1"),
+                    document.getElementById("target2"),
+                    document.getElementById("target3"),
+                    document.getElementById("target4"),
+                    document.getElementById("target5"),
+                    document.getElementById("target6"),
+                    document.getElementById("target7"),
+                    document.getElementById("target8"),
+                    document.getElementById("target9"),
+                    document.getElementById("target10"),
+                    document.getElementById("target11"),
+                    document.getElementById("target12"),
+                    document.getElementById("target13"),
+                    document.getElementById("target14"),
+                    document.getElementById("target15")
+                ];
+            }
+            selectNewTarget();
+        }
+        
+        function selectNewTarget() {
+            if(targets == null) {
+                console.log("Targets not initalized, call onModeChange first");
+                return;
+            }
+            if(selectedTarget != -1) {
+                targets[selectedTarget].style.backgroundColor = "black";
+                targets[selectedTarget].style.borderColor = "black";
+            }
+            if(touch_count == touch_limit)
+                return;
+            while(true){
+                var newTarget = Math.floor(Math.random()*targets.length);
+                if(newTarget != selectedTarget) {
+                    selectedTarget = newTarget;
+                    break;
+                }                
+            }
+            if(selectedTarget != -1) {
+                targets[selectedTarget].style.borderColor = "black";
+                targets[selectedTarget].style.backgroundColor = "white";
+            }
+        }
+
+        function stopwatch() {
+            var now = new Date().getTime();
+            if(touch_count < touch_limit)
+                {
+                var txt = "Count:" + touch_count + " Time:" + ((now-start_time)/1000.0).toFixed(2);
+                stop_time = now;
+                if(start_time == 0) 
+                    txt = "Touch target to begin stopwatch";                
+                document.getElementById("stopwatch").innerHTML = txt;
+
+                }
+            else {
+                var txt = "Count:" + touch_count + " Time:" + ((stop_time-start_time)/1000.0).toFixed(2);
+                document.getElementById("stopwatch").innerHTML = txt;
+
+            }
+       }
+        
+        function targetTouched(element){
+            // check if correct target was touched
+            if(element != undefined) {
+                if(element.id == targets[selectedTarget].id) {
+                    if(touch_count == 0)
+                        start_time = new Date().getTime();
+                    touch_count += 1;        
+                    selectNewTarget();
+                }
+            }
+        }
+
+        var elem = document.documentElement;
+        var isFullscreen = false;
+        
+        function toggleFullscreen() {
+            if(isFullscreen)
+                closeFullscreen();
+            else
+                openFullscreen();
+        }
+        function openFullscreen() {
+          if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+          } else if (elem.webkitRequestFullscreen) { /* Safari */
+            elem.webkitRequestFullscreen();
+          } else if (elem.msRequestFullscreen) { /* IE11 */
+            elem.msRequestFullscreen();
+          }
+          isFullscreen = true;
+        }
+        function closeFullscreen() {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+          } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
+          }
+          isFullscreen = false;
+        }
+    </script>
+
+    <style>
+        body { 
+            background-color: #fff; 
+            font-family: sans-serif;
+            image-rendering: pixelated;
+        }
+        .container {
+            height: 100%;
+            width: 100%;
+            position: relative;
+            margin: 0;
+            padding: 0;
+            }
+        .vertical-center {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            align-content: center;
+            -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+            border: 3 solid green;
+            }
+        .touch-content {
+            width: 100%;
+            height: 90%;
+            align-content: center;
+        }
+        .tag { 
+            max-height: 100%; 
+            max-width: 100%;
+            height: 400px;
+            margin: 50;
+        }
+        table, th, td {
+            border: 0px solid black;
+        }
+
+        .target {
+            display: block;
+            width: 40px;
+            height: 40px;
+            background: black;
+            border-width: 20px;
+            border-style: solid;
+            border-color:black;
+        }
+    </style>
+</head>
+<body onload="onLoad();">
+    <div class="container">
+ 
+        <center>
+            <table>
+                <td>
+                    Touch Test 2022.08.29<br>
+                    <label>Mode:</label>
+                    <select name="mode" id="mode" onchange="setMode(this.value)">
+                        <option value="sixteen">Sixteen</option>
+                        <option value="eight">Eight+Aruco</option>
+                    </select>
+                    <button onclick="toggleFullscreen();">Toggle Fullscreen</button>
+        
+                </td>
+                <td width="50"></td>
+                <td>
+                    <div id="stopwatch" style="font-size: 2em;"></div><br>        
+                </td>
+            </table>
+            <div  id="touchtest">
+                [Touch Test Content]
+            </div>
+        </center>
+    </div>
+</body>
