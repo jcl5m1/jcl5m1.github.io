@@ -265,6 +265,9 @@
        }
         
         function targetTouched(element){
+            if(touch_count == touch_limit)
+                return;
+
             // check if correct target was touched
             if(element != undefined) {
                 if(element.id == targets[selectedTarget].id) {
@@ -370,9 +373,11 @@
                     <button onclick="toggleFullscreen();">Toggle Fullscreen</button>
         
                 </td>
-                <td width="50"></td>
+                <td width="200" align="center" valign="middle">
+                    <button onclick="setMode(document.getElementById('mode').value);" style="height: 60px;width: 80px;">Reset</button>
+                </td>
                 <td>
-                    <div id="stopwatch" style="font-size: 2em;"></div><br>        
+                    <div id="stopwatch" style="font-size: 3em;"></div><br>        
                 </td>
             </table>
             <div  id="touchtest">
