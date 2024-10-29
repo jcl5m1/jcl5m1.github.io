@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Connect 4</title>
+<style>
+body {
+    font-family: sans-serif;
+}
+table {
+    border-collapse: collapse;
+    margin: 20px auto;
+}
+td {
+    width: 50px;
+    height: 50px;
+    border: 2px solid black;
+    text-align: center;
+    cursor: pointer;
+}
+.piece {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: 5px auto;
+}
+.red { background-color: red; }
+.black { background-color: black; }
+</style>
+</head>
+<body>
+
+<h1>Connect 4</h1>
+<table></table>
+<button id="reset">Reset</button>
+
+<script>
+const rows = 6;
+const cols = 7;
+let board = [];
+let currentPlayer = 'red';
+let gameOver = false;
+
+// Create board
+const table = document.querySelector('table');
+for (let r = 0; r < rows; r++) {
+    let row = [];
+    let tr = document.createElement('tr');
+    for (let c = 0; c < cols; c++) {
+        let td = document.createElement('td');
+        td.addEventListener('click', () => handleClick(c));
+        tr.appendChild(td);
+        row.push(null);
+    }
+    table.appendChild(tr);
+    board.push(row);
+}
+
+// Handle cell click
+function handleClick(c) {
+    if (gameOver) return;
+    for (let r = rows - 1; r >= 0; r--) {
+        if (!board[r][c]) {
+            board[r][c] = currentPlayer;
+            let cell = table.children[r].children[c];
+            let piece = document.createElement('div');
+            piece.classList.add('piece', currentPlayer);
+            cell.appendChild(piece);
+            if (checkForWinner(r, c)) {
+                gameOver = true;
+                //off by one turn error
+                currentPlayer = currentPlayer === 'red' ? 'black' : 'red';
+                setTimeout(() => alert(currentPlayer + ' wins!'), 10);
+            }
+            currentPlayer = currentPlayer === 'red' ? 'black' : 'red';
+            return;
+        }
+    }
+}
+
+// Check for winner
+function checkForWinner(r, c) {
+    return checkLine(r, c, 1, 0) ||  // horizontal
+           checkLine(r, c, 0, 1) ||  // vertical
+           checkLine(r, c, 1, 1) ||  // diagonal /
+           checkLine(r, c, 1, -1); // diagonal \
+}
+
+function checkLine(r, c, dr, dc) {
+    let count = 0;
+    for (let i = -3; i <= 3; i++) {
+        let row = r + i * dr;
+        let col = c + i * dc;
+        if (row >= 0 && row < rows && col >= 0 && col < cols && board[row][col] === currentPlayer) {
+            count++;
+            if (count >= 4) return true;
+        } else {
+            count = 0;
+        }
+    }
+    return false;
+}
+
+// Reset button
+document.getElementById('reset').addEventListener('click', () => {
+    board = [];
+    for (let r = 0; r < rows; r++) {
+        let row = [];
+        for (let c = 0; c < cols; c++) {
+            row.push(null);
+            table.children[r].children[c].innerHTML = '';
+        }
+        board.push(row);
+    }
+    currentPlayer = 'red';
+    gameOver = false;
+});
+</script>
+
+</body>
+</html>
